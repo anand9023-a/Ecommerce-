@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purple Commerce - Complete E-commerce Website</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: 'hsl(280, 100%, 46%)',
+                        accent: 'hsl(267, 65%, 77%)',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, hsl(280, 100%, 46%) 0%, hsl(267, 65%, 77%) 100%);
+        }
+        .product-hover {
+            transition: all 0.3s ease;
+        }
+        .product-hover:hover {
+            transform: translateY(-5px);
+        }
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .cart-badge {
+            animation: pulse 2s infinite;
+        }
+        .hidden { display: none; }
+        .page { display: none; }
+        .page.active { display: block; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-2xl font-bold text-purple-600 cursor-pointer flex items-center" onclick="showPage('home')">
+                        💎 Purple Commerce
+                    </h1>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Desktop menu -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#" onclick="showPage('home')" class="nav-link text-gray-700 hover:text-purple-600 transition-colors">Home</a>
+                    <a href="#" onclick="showPage('products')" class="nav-link text-gray-700 hover:text-purple-600 transition-colors">Products</a>
+                    <a href="#" onclick="showPage('about')" class="nav-link text-gray-700 hover:text-purple-600 transition-colors">About</a>
+                    <a href="#" onclick="showPage('cart')" class="nav-link text-gray-700 hover:text-purple-600 transition-colors relative">
+                        🛒 Cart
+                        <span id="cart-count" class="cart-badge absolute -top-2 -right-2 bg-purple-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">0</span>
+                    </a>
+                    <a href="#" onclick="showPage('profile')" class="nav-link text-gray-700 hover:text-purple-600 transition-colors">👤 Profile</a>
+                </div>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="md:hidden border-t pt-4 pb-4 hidden">
+                <div class="flex flex-col space-y-3">
+                    <a href="#" onclick="showPage('home')" class="text-gray-700 hover:text-purple-600 transition-colors">Home</a>
+                    <a href="#" onclick="showPage('products')" class="text-gray-700 hover:text-purple-600 transition-colors">Products</a>
+                    <a href="#" onclick="showPage('about')" class="text-gray-700 hover:text-purple-600 transition-colors">About</a>
+                    <a href="#" onclick="showPage('cart')" class="text-gray-700 hover:text-purple-600 transition-colors">Cart (<span id="mobile-cart-count">0</span>)</a>
+                    <a href="#" onclick="showPage('profile')" class="text-gray-700 hover:text-purple-600 transition-colors">Profile</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Page -->
+    <div id="home-page" class="page active">
+        <!-- Hero Section -->
+        <section class="gradient-bg text-white py-20">
+            <div class="max-w-7xl mx-auto px-4 text-center">
+                <h2 class="text-5xl font-bold mb-6 slide-in">Welcome to Purple Commerce</h2>
+                <p class="text-xl mb-8 slide-in">Discover amazing products at unbeatable prices</p>
+                <button onclick="showPage('products')" class="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors slide-in">
+                    Shop Now
+                </button>
+            </div>
+        </section>
+
+        <!-- Featured Products -->
+        <section class="py-16">
+            <div class="max-w-7xl mx-auto px-4">
+                <h3 class="text-3xl font-bold text-center mb-12">Featured Products</h3>
+                <div id="featured-products" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Featured products will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="bg-white py-16">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <div class="text-4xl text-purple-600 mb-4">🚚</div>
+                        <h4 class="text-xl font-semibold mb-2">Free Shipping</h4>
+                        <p class="text-gray-600">Free shipping on orders over $50</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl text-purple-600 mb-4">🔄</div>
+                        <h4 class="text-xl font-semibold mb-2">Easy Returns</h4>
+                        <p class="text-gray-600">30-day return policy</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl text-purple-600 mb-4">🎧</div>
+                        <h4 class="text-xl font-semibold mb-2">24/7 Support</h4>
+                        <p class="text-gray-600">Always here to help</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Products Page -->
+    <div id="products-page" class="page">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold">All Products</h2>
+                <div class="flex space-x-4">
+                    <select id="category-filter" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                        <option value="">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="books">Books</option>
+                        <option value="home">Home & Garden</option>
+                    </select>
+                    <select id="sort-filter" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                        <option value="">Sort By</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="name">Name A-Z</option>
+                    </select>
+                </div>
+            </div>
+            <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Detail Page -->
+    <div id="product-detail-page" class="page">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div id="product-detail-content">
+                <!-- Product detail will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Page -->
+    <div id="cart-page" class="page">
+        <div class="max-w-4xl mx-auto px-4 py-8">
+            <h2 class="text-3xl font-bold mb-8">Shopping Cart</h2>
+            <div id="cart-content">
+                <!-- Cart content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Page -->
+    <div id="checkout-page" class="page">
+        <div class="max-w-4xl mx-auto px-4 py-8">
+            <h2 class="text-3xl font-bold mb-8">Checkout</h2>
+            <div id="checkout-content">
+                <!-- Checkout form will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login-page" class="page">
+        <div class="min-h-screen flex items-center justify-center px-4">
+            <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-center mb-8">Login</h2>
+                <form id="login-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" name="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" name="password" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                    </div>
+                    <button type="submit" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                        Login
+                    </button>
+                    <p class="text-center text-gray-600">
+                        Don't have an account? 
+                        <a href="#" onclick="showPage('signup')" class="text-purple-600 hover:underline">Sign up</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Page -->
+    <div id="signup-page" class="page">
+        <div class="min-h-screen flex items-center justify-center px-4">
+            <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-center mb-8">Sign Up</h2>
+                <form id="signup-form" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                            <input type="text" name="firstName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                            <input type="text" name="lastName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" name="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" name="password" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                        <input type="password" name="confirmPassword" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                    </div>
+                    <button type="submit" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                        Sign Up
+                    </button>
+                    <p class="text-center text-gray-600">
+                        Already have an account? 
+                        <a href="#" onclick="showPage('login')" class="text-purple-600 hover:underline">Login</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profile-page" class="page">
+        <div class="max-w-4xl mx-auto px-4 py-8">
+            <h2 class="text-3xl font-bold mb-8">My Profile</h2>
+            <div id="profile-content">
+                <!-- Profile content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders Page -->
+    <div id="orders-page" class="page">
+        <div class="max-w-6xl mx-auto px-4 py-8">
+            <h2 class="text-3xl font-bold mb-8">My Orders</h2>
+            <div id="orders-content">
+                <!-- Orders content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- About Page -->
+    <div id="about-page" class="page">
+        <div class="max-w-4xl mx-auto px-4 py-8">
+            <h2 class="text-3xl font-bold text-center mb-8">About Purple Commerce</h2>
+            <div class="prose prose-lg mx-auto">
+                <div class="text-center mb-12">
+                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400" alt="Modern office workspace" class="rounded-lg shadow-lg w-full h-64 object-cover mb-6">
+                </div>
+                <p class="text-lg text-gray-700 mb-6">
+                    Welcome to Purple Commerce, your premier destination for quality products and exceptional shopping experiences. Founded in 2020, we've been committed to bringing you the best products at competitive prices.
+                </p>
+                <h3 class="text-2xl font-semibold mb-4">Our Mission</h3>
+                <p class="text-gray-700 mb-6">
+                    To provide customers with an outstanding online shopping experience through quality products, competitive pricing, and exceptional customer service.
+                </p>
+                <h3 class="text-2xl font-semibold mb-4">Why Choose Us?</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 mb-6">
+                    <li>Curated selection of high-quality products</li>
+                    <li>Competitive pricing and regular promotions</li>
+                    <li>Fast and reliable shipping</li>
+                    <li>Easy returns and exchanges</li>
+                    <li>24/7 customer support</li>
+                </ul>
+                <div class="text-center">
+                    <button onclick="showPage('products')" class="bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                        Start Shopping
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 z-50 translate-x-full">
+        <span id="notification-text"></span>
+    </div>
+
+    <script>
+        // Sample product data
+        const products = [
+            {
+                id: 1,
+                name: "Wireless Headphones",
+                price: 99.99,
+                category: "electronics",
+                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
+                description: "High-quality wireless headphones with noise cancellation and premium sound quality."
+            },
+            {
+                id: 2,
+                name: "Smart Watch",
+                price: 199.99,
+                category: "electronics",
+                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
+                description: "Advanced smartwatch with fitness tracking, heart rate monitor, and GPS capabilities."
+            },
+            {
+                id: 3,
+                name: "Cotton T-Shirt",
+                price: 29.99,
+                category: "clothing",
+                image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
+                description: "Premium cotton t-shirt available in multiple colors and sizes."
+            },
+            {
+                id: 4,
+                name: "Programming Book",
+                price: 49.99,
+                category: "books",
+                image: "https://images.unsplash.com/photo-1532012197267-da84d127e765?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
+                description: "Comprehensive guide to modern web development technologies and best practices."
+            },
+            {
+                id: 5,
+                name: "Indoor Plant",
+                price: 39.99,
+                category: "home",
+                image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
+                description: "Beautiful indoor plant perfect for home decoration and air purification."
+            },
+            {
+                id: 6,
+                name: "Coffee Maker",
+                price: 129.99,
+                category: "home",
+                image: "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
+                description: "Automatic coffee maker with programmable settings and thermal carafe."
+            },
+            {
+                id: 7,
+                name: "Laptop Backpack",
+                price: 79.99,
+                category: "electronics",
+                image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
+                description: "Durable laptop backpack with multiple compartments and USB charging port."
+            },
+            {
+                id: 8,
+                name: "Running Shoes",
+                price: 119.99,
+                category: "clothing",
+                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
+                description: "Comfortable running shoes with advanced cushioning and breathable material."
+            }
+        ];
+
+        // Global state
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let orders = JSON.parse(localStorage.getItem('orders')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+        let currentPage = 'home';
+        let selectedProduct = null;
+
+        // Navigation functions
+        function showPage(page, productId = null) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            
+            // Show selected page
+            document.getElementById(page + '-page').classList.add('active');
+            currentPage = page;
+
+            // Update active nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('text-purple-600', 'font-medium');
+                link.classList.add('text-gray-700');
+            });
+
+            // Page-specific logic
+            switch(page) {
+                case 'home':
+                    loadFeaturedProducts();
+                    break;
+                case 'products':
+                    loadProducts();
+                    break;
+                case 'product-detail':
+                    if (productId) {
+                        selectedProduct = products.find(p => p.id === parseInt(productId));
+                        loadProductDetail();
+                    }
+                    break;
+                case 'cart':
+                    loadCart();
+                    break;
+                case 'checkout':
+                    loadCheckout();
+                    break;
+                case 'profile':
+                    loadProfile();
+                    break;
+                case 'orders':
+                    loadOrders();
+                    break;
+                case 'login':
+                    setupLoginForm();
+                    break;
+                case 'signup':
+                    setupSignupForm();
+                    break;
+            }
+
+            // Hide mobile menu
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        // Product loading functions
+        function loadFeaturedProducts() {
+            const container = document.getElementById('featured-products');
+            const featuredProducts = products.slice(0, 4);
+            
+            container.innerHTML = featuredProducts.map(product => `
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden product-hover transition-all duration-300 cursor-pointer">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover" onclick="showPage('product-detail', ${product.id})">
+                    <div class="p-4">
+                        <h4 class="font-semibold text-lg mb-2 cursor-pointer hover:text-purple-600" onclick="showPage('product-detail', ${product.id})">
+                            ${product.name}
+                        </h4>
+                        <p class="text-gray-600 text-sm mb-2">
+                            ${product.description.substring(0, 80)}...
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-purple-600">
+                                $${product.price}
+                            </span>
+                            <button onclick="addToCart(${product.id})" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadProducts() {
+            const container = document.getElementById('products-grid');
+            let filteredProducts = [...products];
+
+            // Apply filters
+            const categoryFilter = document.getElementById('category-filter').value;
+            const sortFilter = document.getElementById('sort-filter').value;
+
+            if (categoryFilter) {
+                filteredProducts = filteredProducts.filter(p => p.category === categoryFilter);
+            }
+
+            if (sortFilter) {
+                switch(sortFilter) {
+                    case 'price-low':
+                        filteredProducts.sort((a, b) => a.price - b.price);
+                        break;
+                    case 'price-high':
+                        filteredProducts.sort((a, b) => b.price - a.price);
+                        break;
+                    case 'name':
+                        filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+                        break;
+                }
+            }
+
+            container.innerHTML = filteredProducts.map(product => `
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden product-hover transition-all duration-300 cursor-pointer">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover" onclick="showPage('product-detail', ${product.id})">
+                    <div class="p-4">
+                        <h4 class="font-semibold text-lg mb-2 cursor-pointer hover:text-purple-600" onclick="showPage('product-detail', ${product.id})">
+                            ${product.name}
+                        </h4>
+                        <p class="text-gray-600 text-sm mb-2">
+                            ${product.description.substring(0, 80)}...
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-purple-600">
+                                $${product.price}
+                            </span>
+                            <button onclick="addToCart(${product.id})" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadProductDetail() {
+            if (!selectedProduct) return;
+
+            const container = document.getElementById('product-detail-content');
+            container.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <div>
+                        <img src="${selectedProduct.image}" alt="${selectedProduct.name}" class="w-full h-96 object-cover rounded-lg shadow-lg">
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold mb-4">${selectedProduct.name}</h1>
+                        <p class="text-4xl font-bold text-purple-600 mb-6">$${selectedProduct.price}</p>
+                        <p class="text-gray-700 mb-6">${selectedProduct.description}</p>
+                        
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-2">Quantity</label>
+                            <select id="quantity-select" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        
+                        <div class="flex space-x-4 mb-8">
+                            <button onclick="addToCartWithQuantity(${selectedProduct.id})" class="flex-1 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                                Add to Cart
+                            </button>
+                            <button onclick="buyNow(${selectedProduct.id})" class="flex-1 bg-gray-800 text-white py-3 rounded-lg font-semibold hover:bg-gray-900 transition-colors">
+                                Buy Now
+                            </button>
+                        </div>
+                        
+                        <div class="border-t pt-6">
+                            <h3 class="font-semibold mb-4">Product Features</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li class="flex items-center">✅ High quality materials</li>
+                                <li class="flex items-center">✅ Fast shipping</li>
+                                <li class="flex items-center">✅ 1-year warranty</li>
+                                <li class="flex items-center">✅ 30-day return policy</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Cart functions
+        function addToCart(productId, quantity = 1) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    quantity: quantity
+                });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            showNotification(`${product.name} added to cart!`);
+        }
+
+        function addToCartWithQuantity(productId) {
+            const quantity = parseInt(document.getElementById('quantity-select').value);
+            addToCart(productId, quantity);
+        }
+
+        function buyNow(productId) {
+            addToCartWithQuantity(productId);
+            showPage('checkout');
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            loadCart();
+        }
+
+        function updateQuantity(productId, newQuantity) {
+            if (newQuantity <= 0) {
+                removeFromCart(productId);
+                return;
+            }
+
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity = newQuantity;
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCount();
+                loadCart();
+            }
+        }
+
+        function loadCart() {
+            const container = document.getElementById('cart-content');
+            
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16">
+                        <div class="text-6xl text-gray-300 mb-4">🛒</div>
+                        <h3 class="text-2xl font-semibold text-gray-600 mb-4">Your cart is empty</h3>
+                        <button onclick="showPage('products')" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors">
+                            Continue Shopping
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            const shipping = subtotal > 50 ? 0 : 9.99;
+            const total = subtotal + shipping;
+
+            container.innerHTML = `
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <div class="space-y-4">
+                        ${cart.map(item => `
+                            <div class="flex items-center space-x-4 border-b pb-4">
+                                <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded">
+                                <div class="flex-1">
+                                    <h4 class="font-semibold">${item.name}</h4>
+                                    <p class="text-gray-600">$${item.price}</p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})" class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100">-</button>
+                                    <span class="w-8 text-center">${item.quantity}</span>
+                                    <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})" class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100">+</button>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-semibold">$${(item.price * item.quantity).toFixed(2)}</p>
+                                    <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 text-sm">Remove</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-xl font-semibold mb-4">Order Summary</h3>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between">
+                            <span>Subtotal</span>
+                            <span>$${subtotal.toFixed(2)}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Shipping</span>
+                            <span>${shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+                        </div>
+                        <div class="border-t pt-2 font-semibold text-lg">
+                            <div class="flex justify-between">
+                                <span>Total</span>
+                                <span>$${total.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="showPage('checkout')" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                        Proceed to Checkout
+                    </button>
+                </div>
+            `;
+        }
+
+        function loadCheckout() {
+            const container = document.getElementById('checkout-content');
+            
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-gray-600">Your cart is empty</p>';
+                return;
+            }
+
+            const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            const shipping = subtotal > 50 ? 0 : 9.99;
+            const total = subtotal + shipping;
+
+            container.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-xl font-semibold mb-6">Shipping Information</h3>
+                        <form id="checkout-form" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                    <input type="text" name="firstName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                    <input type="text" name="lastName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input type="email" name="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                                <input type="text" name="address" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                                    <input type="text" name="city" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">State</label>
+                                    <input type="text" name="state" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">ZIP Code</label>
+                                    <input type="text" name="zip" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                                Place Order
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-xl font-semibold mb-6">Order Summary</h3>
+                        <div class="space-y-3 mb-6">
+                            ${cart.map(item => `
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="font-medium">${item.name}</p>
+                                        <p class="text-sm text-gray-600">Qty: ${item.quantity}</p>
+                                    </div>
+                                    <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="border-t pt-4 space-y-2">
+                            <div class="flex justify-between">
+                                <span>Subtotal</span>
+                                <span>$${subtotal.toFixed(2)}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Shipping</span>
+                                <span>${shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+                            </div>
+                            <div class="border-t pt-2 font-semibold text-lg">
+                                <div class="flex justify-between">
+                                    <span>Total</span>
+                                    <span>$${total.toFixed(2)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Setup checkout form
+            document.getElementById('checkout-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const order = {
+                    id: Date.now(),
+                    items: [...cart],
+                    total: total,
+                    date: new Date().toISOString(),
+                    status: 'Processing'
+                };
+
+                orders.push(order);
+                localStorage.setItem('orders', JSON.stringify(orders));
+
+                cart = [];
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCount();
+
+                showNotification('Order placed successfully!');
+                setTimeout(() => {
+                    showPage('orders');
+                }, 1500);
+            });
+        }
+
+        // User authentication
+        function setupLoginForm() {
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(e.target);
+                const email = formData.get('email');
+                
+                currentUser = {
+                    email: email,
+                    name: 'John Doe'
+                };
+
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showNotification('Login successful!');
+                setTimeout(() => {
+                    showPage('home');
+                }, 1000);
+            });
+        }
+
+        function setupSignupForm() {
+            document.getElementById('signup-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(e.target);
+                const firstName = formData.get('firstName');
+                const lastName = formData.get('lastName');
+                const email = formData.get('email');
+                const password = formData.get('password');
+                const confirmPassword = formData.get('confirmPassword');
+
+                if (password !== confirmPassword) {
+                    showNotification('Passwords do not match', 'error');
+                    return;
+                }
+
+                currentUser = {
+                    email: email,
+                    name: `${firstName} ${lastName}`
+                };
+
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showNotification('Account created successfully!');
+                setTimeout(() => {
+                    showPage('home');
+                }, 1000);
+            });
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            showNotification('Logged out successfully');
+            showPage('login');
+        }
+
+        // Profile and orders
+        function loadProfile() {
+            const container = document.getElementById('profile-content');
+            
+            if (!currentUser) {
+                container.innerHTML = `
+                    <div class="text-center py-16">
+                        <h3 class="text-2xl font-semibold text-gray-600 mb-4">Please login to view your profile</h3>
+                        <button onclick="showPage('login')" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors">
+                            Login
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <div class="text-center mb-6">
+                            <div class="w-24 h-24 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-white text-2xl">👤</span>
+                            </div>
+                            <h3 class="text-xl font-semibold">${currentUser.name}</h3>
+                            <p class="text-gray-600">${currentUser.email}</p>
+                        </div>
+                        <div class="space-y-3">
+                            <button class="w-full text-left px-4 py-2 rounded hover:bg-gray-100 flex items-center bg-gray-100">
+                                👤 Personal Info
+                            </button>
+                            <button onclick="showPage('orders')" class="w-full text-left px-4 py-2 rounded hover:bg-gray-100 flex items-center">
+                                🛍️ My Orders
+                            </button>
+                            <button onclick="logout()" class="w-full text-left px-4 py-2 rounded hover:bg-gray-100 text-red-600 flex items-center">
+                                🚪 Logout
+                            </button>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-xl font-semibold mb-6">Personal Information</h3>
+                        <form class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                    <input type="text" value="John" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                    <input type="text" value="Doe" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input type="email" value="${currentUser.email}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                <input type="tel" value="+1 (555) 123-4567" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
+                            </div>
+                            <button type="submit" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                                Save Changes
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadOrders() {
+            const container = document.getElementById('orders-content');
+            
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16">
+                        <div class="text-6xl text-gray-300 mb-4">🛍️</div>
+                        <h3 class="text-2xl font-semibold text-gray-600 mb-4">No orders yet</h3>
+                        <button onclick="showPage('products')" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors">
+                            Start Shopping
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="space-y-6">
+                    ${orders.reverse().map(order => `
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-lg font-semibold">Order #${order.id}</h3>
+                                    <p class="text-gray-600">${new Date(order.date).toLocaleDateString()}</p>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                    ${order.status}
+                                </span>
+                            </div>
+                            <div class="space-y-2 mb-4">
+                                ${order.items.map(item => `
+                                    <div class="flex justify-between items-center">
+                                        <span>${item.name} x ${item.quantity}</span>
+                                        <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="border-t pt-4 flex justify-between items-center">
+                                <span class="font-semibold">Total: $${order.total.toFixed(2)}</span>
+                                <button onclick="showNotification('Order tracking feature coming soon!')" class="text-purple-600 hover:underline">
+                                    Track Order
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Utility functions
+        function updateCartCount() {
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cart-count').textContent = count;
+            document.getElementById('mobile-cart-count').textContent = count;
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            
+            notificationText.textContent = message;
+            notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 z-50 ${
+                type === 'error' ? 'bg-red-500' : 'bg-green-500'
+            } text-white translate-x-0`;
+            
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+            }, 3000);
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Product filter listeners
+            document.getElementById('category-filter').addEventListener('change', loadProducts);
+            document.getElementById('sort-filter').addEventListener('change', loadProducts);
+
+            // Initialize
+            updateCartCount();
+            loadFeaturedProducts();
+        });
+    </script>
+</body>
+</html>
