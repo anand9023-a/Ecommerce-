@@ -1,343 +1,390 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purple Commerce - Complete E-commerce Website</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: 'hsl(280, 100%, 46%)',
-                        accent: 'hsl(267, 65%, 77%)',
-                    }
-                }
-            }
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-        .gradient-bg {
-            background: linear-gradient(135deg, hsl(280, 100%, 46%) 0%, hsl(267, 65%, 77%) 100%);
-        }
-        .product-hover {
-            transition: all 0.3s ease;
-        }
-        .product-hover:hover {
-            transform: translateY(-5px);
-        }
-        .slide-in {
-            animation: slideIn 0.5s ease-out;
-        }
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .cart-badge {
-            animation: pulse 2s infinite;
-        }
-        .hidden { display: none; }
-        .page { display: none; }
-        .page.active { display: block; }
-    </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Raksha Bandhan — Flower Montage (30)</title>
+<style>
+  :root{
+    --bg1:#fff7ed; --accent1:#ff7b7b; --gold:#ffd36b; --deep:#3b2b1a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,var(--bg1),#fff2df);color:var(--deep);overflow:hidden}
+  .stage{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
+  .frame{width:min(1200px,96vw);height:min(820px,94vh);border-radius:18px;overflow:hidden;position:relative;background:linear-gradient(180deg,#fff,#fff8f2);box-shadow:0 30px 80px rgba(55,30,10,0.08)}
+  /* parallax layers */
+  .layer{position:absolute;inset:0;pointer-events:none;z-index:1;transition:transform .2s}
+  .petalsCanvas{position:absolute;inset:0;z-index:2;pointer-events:none}
+  /* interactive area */
+  .playArea{position:absolute;inset:0;z-index:4;padding:24px;display:flex;align-items:center;justify-content:center}
+  .polaroid{position:absolute;width:320px;height:380px;border-radius:12px;background:#fff;padding:12px 12px 28px;box-shadow:0 22px 50px rgba(30,14,8,0.18);cursor:grab;touch-action:none;user-select:none;transition:transform .28s ease}
+  .polaroid img{width:100%;height:82%;object-fit:cover;border-radius:8px;display:block}
+  .label{margin-top:8px;font-weight:800;color:var(--deep);text-align:center;font-size:13px}
+  .controls{position:absolute;right:20px;top:18px;display:flex;flex-direction:column;gap:10px;z-index:9}
+  .btn{padding:10px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);background:#fff;font-weight:700;cursor:pointer}
+  .primary{background:linear-gradient(90deg,#ff8a65,#ffd180);border:0;color:#3b2b1a}
+  .captionBox{position:absolute;left:28px;bottom:26px;padding:10px 14px;border-radius:10px;background:linear-gradient(90deg, rgba(59,43,26,0.9), rgba(255,240,220,0.06));color:#fff;font-weight:700;z-index:10;backdrop-filter:blur(4px)}
+  .overlayRakhi{position:absolute;left:50%;transform:translateX(-50%);top:14%;z-index:11;pointer-events:none}
+  .rakhiBar{height:4px;background:linear-gradient(90deg,#c04a3b,#ffd36b);border-radius:6px;width:0;transform-origin:left}
+  .rakhiKnot{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle,#ffd36b,#ff6b5a);box-shadow:0 10px 22px rgba(255,120,90,0.25);opacity:0;transform:translateY(-6px) scale(.6)}
+  .thumbs{display:flex;gap:8px;flex-wrap:wrap;max-width:260px}
+  .thumbs img{width:58px;height:44px;object-fit:cover;border-radius:8px;border:2px solid rgba(0,0,0,0.04);cursor:pointer}
+  .dots{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:8px;z-index:12}
+  .dot{width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,0.08)}
+  .dot.active{background:var(--accent1);transform:scale(1.25)}
+  footer{position:absolute;left:18px;top:18px;font-size:13px;color:var(--deep);z-index:9}
+  @media (max-width:900px){
+    .polaroid{width:240px;height:300px}
+    .controls{right:8px;top:8px}
+    .captionBox{left:12px;right:12px}
+  }
+  /* animations */
+  @keyframes floaty { from{transform:translateY(0)} to{transform:translateY(-12px)} }
+  .glowPulse{animation:floaty 3.6s ease-in-out infinite alternate}
+</style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center space-x-4">
-                    <h1 class="text-2xl font-bold text-purple-600 cursor-pointer flex items-center" onclick="showPage('home')">
-                        💎 Purple Commerce
-                    </h1>
-                </div>
-                
-                <!-- Mobile menu button -->
-                <div class="md:hidden">
-                    <button id="mobile-menu-btn" class="text-gray-700">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-                </div>
-                
-                <!-- Desktop menu -->
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="#" onclick="showPage('home')" class="nav-link text-gray-700 hover:text-purple-600 transition-colors">Home</a>
-                    <a href="#" onclick="showPage('products')" class="nav-link text-gray-700 hover:text-purple-600 transition-colors">Products</a>
-                    <a href="#" onclick="showPage('about')" class="nav-link text-gray-700 hover:text-purple-600 transition-colors">About</a>
-                    <a href="#" onclick="showPage('cart')" class="nav-link text-gray-700 hover:text-purple-600 transition-colors relative">
-                        🛒 Cart
-                        <span id="cart-count" class="cart-badge absolute -top-2 -right-2 bg-purple-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">0</span>
-                    </a>
-                    <a href="#" onclick="showPage('profile')" class="nav-link text-gray-700 hover:text-purple-600 transition-colors">👤 Profile</a>
-                </div>
-            </div>
-            
-            <!-- Mobile menu -->
-            <div id="mobile-menu" class="md:hidden border-t pt-4 pb-4 hidden">
-                <div class="flex flex-col space-y-3">
-                    <a href="#" onclick="showPage('home')" class="text-gray-700 hover:text-purple-600 transition-colors">Home</a>
-                    <a href="#" onclick="showPage('products')" class="text-gray-700 hover:text-purple-600 transition-colors">Products</a>
-                    <a href="#" onclick="showPage('about')" class="text-gray-700 hover:text-purple-600 transition-colors">About</a>
-                    <a href="#" onclick="showPage('cart')" class="text-gray-700 hover:text-purple-600 transition-colors">Cart (<span id="mobile-cart-count">0</span>)</a>
-                    <a href="#" onclick="showPage('profile')" class="text-gray-700 hover:text-purple-600 transition-colors">Profile</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+<body>
+  <div class="stage">
+    <div class="frame" id="frame">
+      <div class="layer" id="bgLayer"></div>
+      <canvas class="petalsCanvas" id="petalsCanvas"></canvas>
+      <div class="playArea" id="playArea"></div>
 
-    <!-- Home Page -->
-    <div id="home-page" class="page active">
-        <!-- Hero Section -->
-        <section class="gradient-bg text-white py-20">
-            <div class="max-w-7xl mx-auto px-4 text-center">
-                <h2 class="text-5xl font-bold mb-6 slide-in">Welcome to Purple Commerce</h2>
-                <p class="text-xl mb-8 slide-in">Discover amazing products at unbeatable prices</p>
-                <button onclick="showPage('products')" class="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors slide-in">
-                    Shop Now
-                </button>
-            </div>
-        </section>
+      <div class="overlayRakhi" id="overlayRakhi" aria-hidden="true" style="width:60%;">
+        <div class="rakhiBar" id="rakhiBar"></div>
+        <div style="height:8px"></div>
+        <div class="rakhiKnot" id="rakhiKnot"></div>
+      </div>
 
-        <!-- Featured Products -->
-        <section class="py-16">
-            <div class="max-w-7xl mx-auto px-4">
-                <h3 class="text-3xl font-bold text-center mb-12">Featured Products</h3>
-                <div id="featured-products" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <!-- Featured products will be loaded here -->
-                </div>
-            </div>
-        </section>
+      <div class="captionBox" id="captionBox">Click <strong>Play</strong> — enjoy a flower story ✨</div>
 
-        <!-- Features Section -->
-        <section class="bg-white py-16">
-            <div class="max-w-7xl mx-auto px-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="text-center">
-                        <div class="text-4xl text-purple-600 mb-4">🚚</div>
-                        <h4 class="text-xl font-semibold mb-2">Free Shipping</h4>
-                        <p class="text-gray-600">Free shipping on orders over $50</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-4xl text-purple-600 mb-4">🔄</div>
-                        <h4 class="text-xl font-semibold mb-2">Easy Returns</h4>
-                        <p class="text-gray-600">30-day return policy</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-4xl text-purple-600 mb-4">🎧</div>
-                        <h4 class="text-xl font-semibold mb-2">24/7 Support</h4>
-                        <p class="text-gray-600">Always here to help</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+      <div class="controls">
+        <button class="btn primary" id="playBtn">Play Montage</button>
+        <button class="btn" id="pauseBtn">Pause</button>
+        <button class="btn" id="tieBtn">Tie Rakhi (effect)</button>
+        <button class="btn" id="musicBtn">Play Music</button>
+        <div class="thumbs" id="thumbs"></div>
+        <div style="height:8px"></div>
+        <button class="btn" id="exportBtn">Export Offline</button>
+      </div>
+
+      <div class="dots" id="dots"></div>
+      <footer>Made with ♥ — Festive Flowers Montage</footer>
     </div>
+  </div>
 
-    <!-- Products Page -->
-    <div id="products-page" class="page">
-        <div class="max-w-7xl mx-auto px-4 py-8">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl font-bold">All Products</h2>
-                <div class="flex space-x-4">
-                    <select id="category-filter" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
-                        <option value="">All Categories</option>
-                        <option value="electronics">Electronics</option>
-                        <option value="clothing">Clothing</option>
-                        <option value="books">Books</option>
-                        <option value="home">Home & Garden</option>
-                    </select>
-                    <select id="sort-filter" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
-                        <option value="">Sort By</option>
-                        <option value="price-low">Price: Low to High</option>
-                        <option value="price-high">Price: High to Low</option>
-                        <option value="name">Name A-Z</option>
-                    </select>
-                </div>
-            </div>
-            <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- Products will be loaded here -->
-            </div>
-        </div>
-    </div>
+  <!-- background audio (free sample) -->
+  <audio id="bgAudio" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_4a6cb0b4d9.mp3?filename=romantic-acoustic-111986.mp3" type="audio/mpeg">
+  </audio>
 
-    <!-- Product Detail Page -->
-    <div id="product-detail-page" class="page">
-        <div class="max-w-7xl mx-auto px-4 py-8">
-            <div id="product-detail-content">
-                <!-- Product detail will be loaded here -->
-            </div>
-        </div>
-    </div>
+<script>
+/* ========== CONFIG ========== */
+/* We'll use Unsplash source with sig to get 30 distinct flower images */
+const IMAGES_COUNT = 30;
+const baseUrls = [];
+for(let i=1;i<=IMAGES_COUNT;i++){
+  // resolution can be large; adjust if needed
+  baseUrls.push(`https://source.unsplash.com/1600x1100/?flower&sig=${i}`);
+}
+/* auto-generated captions (mix of Hindi/Hinglish short lines) */
+const captions = [
+  "Phoolon ki khushboo, yaadon ka jashn.",
+  "Rangon mein khoya ek pal.",
+  "Nature ki muskaan — tumhare liye.",
+  "Har phool me kahaani chhupi hai.",
+  "Suraj ki roshni aur phoolon ka geet.",
+  "Chandni si narmi, phoolon ka saath.",
+  "Rang birange pal, yaadgaar lamhe.",
+  "Khushiyon se bhara ek guldaan.",
+  "Phoolon ki tarah khilte raho.",
+  "Pal jo phool se bhi pyare lagte hain.",
+  "Hass aur khushboo — dono tumhare liye.",
+  "Har phool ek naya ehsaas.",
+  "Raunak aur rang, dono saath hain.",
+  "Dil se nikla shukriya — phoolon ke naam.",
+  "Chhota sa phool, badi si khushi.",
+  "Khushiyon ka chota sa phoolon ka mela.",
+  "Phool bhi muskurate hain tumhare liye.",
+  "Zindagi me phoolon jesi mithaas.",
+  "Rangon se bhara hua aangan.",
+  "Phoolon ki baarish, dil ki khushi.",
+  "Satrangi phool, satrangi yaadein.",
+  "Phoolon ki zubaan, dil ki baat.",
+  "Meethi khushboo, pyara ehsaas.",
+  "Phoolon me chhupa ek muskaan.",
+  "Har pal me phoolon ki jagah ho.",
+  "Rangon ke saagar me doob jao.",
+  "Phoolon ka safar, yaadon ka safar.",
+  "Chand sa noor, phoolon ka shor.",
+  "Phoolon ki god me sukoon."
+];
 
-    <!-- Cart Page -->
-    <div id="cart-page" class="page">
-        <div class="max-w-4xl mx-auto px-4 py-8">
-            <h2 class="text-3xl font-bold mb-8">Shopping Cart</h2>
-            <div id="cart-content">
-                <!-- Cart content will be loaded here -->
-            </div>
-        </div>
-    </div>
+/* ========== Build UI: create polaroids dynamically ========== */
+const playArea = document.getElementById('playArea');
+const thumbsEl = document.getElementById('thumbs');
+const dotsEl = document.getElementById('dots');
+const captionBox = document.getElementById('captionBox');
+const overlayRakhi = document.getElementById('overlayRakhi');
+const rakhiBar = document.getElementById('rakhiBar');
+const rakhiKnot = document.getElementById('rakhiKnot');
 
-    <!-- Checkout Page -->
-    <div id="checkout-page" class="page">
-        <div class="max-w-4xl mx-auto px-4 py-8">
-            <h2 class="text-3xl font-bold mb-8">Checkout</h2>
-            <div id="checkout-content">
-                <!-- Checkout form will be loaded here -->
-            </div>
-        </div>
-    </div>
+let polaroids = [];
+let z = 20;
+for(let i=0;i<IMAGES_COUNT;i++){
+  const el = document.createElement('div');
+  el.className = 'polaroid';
+  el.dataset.index = i;
+  // random start pos inside frame
+  const fx = Math.random()*600 - 200;
+  const fy = Math.random()*320 - 160;
+  el.style.left = (playArea.clientWidth/2 + fx) + 'px';
+  el.style.top = (playArea.clientHeight/2 + fy) + 'px';
+  el.style.transform = `rotate(${(Math.random()*16-8).toFixed(2)}deg) scale(${1 - Math.random()*0.06})`;
+  el.innerHTML = `<img src="${baseUrls[i]}" alt="flower-${i}"><div class="label">${captions[i]||''}</div>`;
+  playArea.appendChild(el);
+  polaroids.push({el, src: baseUrls[i], caption: captions[i]||''});
+  // thumb
+  const t = document.createElement('img'); t.src = baseUrls[i]; t.dataset.idx = i;
+  t.addEventListener('click', ()=> focusPolaroid(i));
+  thumbsEl.appendChild(t);
+  // dot
+  const d = document.createElement('div'); d.className='dot'; d.dataset.idx=i; d.addEventListener('click', ()=> focusPolaroid(i));
+  dotsEl.appendChild(d);
+}
 
-    <!-- Login Page -->
-    <div id="login-page" class="page">
-        <div class="min-h-screen flex items-center justify-center px-4">
-            <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
-                <h2 class="text-3xl font-bold text-center mb-8">Login</h2>
-                <form id="login-form" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input type="email" name="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                        <input type="password" name="password" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
-                    </div>
-                    <button type="submit" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
-                        Login
-                    </button>
-                    <p class="text-center text-gray-600">
-                        Don't have an account? 
-                        <a href="#" onclick="showPage('signup')" class="text-purple-600 hover:underline">Sign up</a>
-                    </p>
-                </form>
-            </div>
-        </div>
-    </div>
+/* ========== Drag / physics (simple) ========== */
+polaroids.forEach((p, idx)=>{
+  const el = p.el;
+  let dragging=false, sx=0, sy=0, ox=0, oy=0;
+  el.addEventListener('pointerdown', e=>{
+    el.setPointerCapture(e.pointerId);
+    dragging=true; el.style.cursor='grabbing'; el.style.zIndex = ++z;
+    sx = e.clientX; sy = e.clientY;
+    const r = el.getBoundingClientRect();
+    const frameRect = document.getElementById('frame').getBoundingClientRect();
+    ox = r.left - frameRect.left; oy = r.top - frameRect.top;
+    el.style.transition = 'none';
+  });
+  window.addEventListener('pointermove', e=>{
+    if(!dragging) return;
+    const dx = e.clientX - sx; const dy = e.clientY - sy;
+    el.style.left = (ox + dx) + 'px'; el.style.top = (oy + dy) + 'px';
+  });
+  window.addEventListener('pointerup', e=>{
+    if(!dragging) return;
+    dragging=false; el.style.cursor='grab';
+    el.style.transition = 'transform .5s ease,left .5s ease,top .5s ease';
+    // small bounce
+    el.style.transform = `rotate(${(Math.random()*6-3)}deg) scale(1)`;
+  });
+  el.addEventListener('dblclick', ()=> triggerTie(idx));
+});
 
-    <!-- Signup Page -->
-    <div id="signup-page" class="page">
-        <div class="min-h-screen flex items-center justify-center px-4">
-            <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
-                <h2 class="text-3xl font-bold text-center mb-8">Sign Up</h2>
-                <form id="signup-form" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                            <input type="text" name="firstName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                            <input type="text" name="lastName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input type="email" name="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                        <input type="password" name="password" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-                        <input type="password" name="confirmPassword" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600">
-                    </div>
-                    <button type="submit" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
-                        Sign Up
-                    </button>
-                    <p class="text-center text-gray-600">
-                        Already have an account? 
-                        <a href="#" onclick="showPage('login')" class="text-purple-600 hover:underline">Login</a>
-                    </p>
-                </form>
-            </div>
-        </div>
-    </div>
+/* ========== Parallax background ========== */
+const bgLayer = document.getElementById('bgLayer');
+function makeBgPattern(){
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600'><defs><radialGradient id='g'><stop offset='0' stop-color='${'#ffd6a5'}' stop-opacity='0.9'/><stop offset='1' stop-color='${'#fff3e0'}' stop-opacity='0'/></radialGradient></defs><rect width='100%' height='100%' fill='url(#g)' /></svg>`;
+  bgLayer.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(svg)}')`;
+  bgLayer.style.backgroundSize = '400px 300px';
+  bgLayer.style.opacity = .8;
+}
+makeBgPattern();
+document.getElementById('frame').addEventListener('mousemove', (e)=>{
+  const r = e.currentTarget.getBoundingClientRect();
+  const cx = (e.clientX - r.left)/r.width - 0.5;
+  const cy = (e.clientY - r.top)/r.height - 0.5;
+  bgLayer.style.transform = `translate(${cx*12}px, ${cy*12}px) rotate(${cx*2}deg)`;
+});
 
-    <!-- Profile Page -->
-    <div id="profile-page" class="page">
-        <div class="max-w-4xl mx-auto px-4 py-8">
-            <h2 class="text-3xl font-bold mb-8">My Profile</h2>
-            <div id="profile-content">
-                <!-- Profile content will be loaded here -->
-            </div>
-        </div>
-    </div>
+/* ========== Petals canvas animation (floating petals) ========== */
+const canvas = document.getElementById('petalsCanvas');
+const ctx = canvas.getContext('2d');
+function resizeCanvas(){
+  const rect = document.getElementById('frame').getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height;
+  canvas.style.width = rect.width + 'px';
+  canvas.style.height = rect.height + 'px';
+}
+resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+function rand(min,max){ return Math.random()*(max-min)+min; }
+class Petal {
+  constructor(){
+    this.reset(true);
+  }
+  reset(init=false){
+    const w = canvas.width, h = canvas.height;
+    this.x = rand(0,w);
+    this.y = init ? rand(0,h) : rand(-h, -20);
+    this.vx = rand(-0.3, 0.8);
+    this.vy = rand(0.4, 1.6);
+    this.size = rand(6,20);
+    this.rot = rand(0,Math.PI*2);
+    this.spin = rand(-0.02,0.02);
+    this.color = `rgba(255,${Math.floor(rand(120,210))},${Math.floor(rand(140,230))},${rand(0.35,0.95)})`;
+  }
+  update(){
+    this.x += this.vx;
+    this.y += this.vy;
+    this.rot += this.spin;
+    if(this.y > canvas.height + 30) this.reset();
+    if(this.x < -30 || this.x > canvas.width+30) this.reset();
+  }
+  draw(){
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rot);
+    ctx.scale(this.size/20, this.size/20);
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.bezierCurveTo(6,-8, 18,-16, 22,-8);
+    ctx.bezierCurveTo(26,-2, 10,6, 0,18);
+    ctx.bezierCurveTo(-10,6, -26,-2, -22,-8);
+    ctx.bezierCurveTo(-18,-16, -6,-8, 0,0);
+    ctx.closePath();
+    ctx.fillStyle = this.color;
+    ctx.shadowColor = this.color; ctx.shadowBlur = 8;
+    ctx.fill();
+    ctx.restore();
+  }
+}
+const petals = [];
+for(let i=0;i<40;i++) petals.push(new Petal());
+function animatePetals(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(const p of petals){ p.update(); p.draw(); }
+  requestAnimationFrame(animatePetals);
+}
+animatePetals();
 
-    <!-- Orders Page -->
-    <div id="orders-page" class="page">
-        <div class="max-w-6xl mx-auto px-4 py-8">
-            <h2 class="text-3xl font-bold mb-8">My Orders</h2>
-            <div id="orders-content">
-                <!-- Orders content will be loaded here -->
-            </div>
-        </div>
-    </div>
+/* ========== Rakhi tie animation ========== */
+function triggerTie(index=0){
+  const p = polaroids[index];
+  if(!p) return;
+  const rect = p.el.getBoundingClientRect();
+  const frameRect = document.getElementById('frame').getBoundingClientRect();
+  const cx = rect.left - frameRect.left + rect.width/2;
+  overlayRakhi.style.left = (cx / frameRect.width * 100) + '%';
+  overlayRakhi.style.top = (rect.top - frameRect.top + 16) + 'px';
+  rakhiBar.style.width = '0';
+  rakhiKnot.style.opacity = 0; rakhiKnot.style.transform = 'translateY(-6px) scale(.6)';
+  rakhiBar.style.transition = 'width .9s cubic-bezier(.2,.9,.2,1)';
+  rakhiKnot.style.transition = 'opacity .5s ease, transform .6s cubic-bezier(.2,.9,.2,1)';
+  requestAnimationFrame(()=>{ rakhiBar.style.width = '160px'; });
+  setTimeout(()=>{ rakhiKnot.style.opacity = 1; rakhiKnot.style.transform = 'translateY(0) scale(1)'; }, 900);
+  captionBox.textContent = p.caption;
+}
 
-    <!-- About Page -->
-    <div id="about-page" class="page">
-        <div class="max-w-4xl mx-auto px-4 py-8">
-            <h2 class="text-3xl font-bold text-center mb-8">About Purple Commerce</h2>
-            <div class="prose prose-lg mx-auto">
-                <div class="text-center mb-12">
-                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400" alt="Modern office workspace" class="rounded-lg shadow-lg w-full h-64 object-cover mb-6">
-                </div>
-                <p class="text-lg text-gray-700 mb-6">
-                    Welcome to Purple Commerce, your premier destination for quality products and exceptional shopping experiences. Founded in 2020, we've been committed to bringing you the best products at competitive prices.
-                </p>
-                <h3 class="text-2xl font-semibold mb-4">Our Mission</h3>
-                <p class="text-gray-700 mb-6">
-                    To provide customers with an outstanding online shopping experience through quality products, competitive pricing, and exceptional customer service.
-                </p>
-                <h3 class="text-2xl font-semibold mb-4">Why Choose Us?</h3>
-                <ul class="list-disc list-inside text-gray-700 space-y-2 mb-6">
-                    <li>Curated selection of high-quality products</li>
-                    <li>Competitive pricing and regular promotions</li>
-                    <li>Fast and reliable shipping</li>
-                    <li>Easy returns and exchanges</li>
-                    <li>24/7 customer support</li>
-                </ul>
-                <div class="text-center">
-                    <button onclick="showPage('products')" class="bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
-                        Start Shopping
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+/* tie button */
+document.getElementById('tieBtn').addEventListener('click', ()=> triggerTie( Math.floor(Math.random()*polaroids.length) ));
 
-    <!-- Notification -->
-    <div id="notification" class="fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 z-50 translate-x-full">
-        <span id="notification-text"></span>
-    </div>
+/* ========== Slideshow auto-focus (montage) ========== */
+let index = 0, timer = null;
+const dots = document.querySelectorAll('.dot');
+function focusPolaroid(i){
+  index = i;
+  const p = polaroids[i].el;
+  const frameRect = document.getElementById('frame').getBoundingClientRect();
+  const pRect = p.getBoundingClientRect();
+  const tx = (frameRect.width - pRect.width)/2;
+  const ty = (frameRect.height - pRect.height)/2;
+  p.style.transition = 'left .7s cubic-bezier(.2,.9,.2), top .7s cubic-bezier(.2,.9,.2), transform .7s';
+  p.style.left = tx + 'px'; p.style.top = ty + 'px'; p.style.transform = 'rotate(0deg) scale(1.02)';
+  captionBox.textContent = polaroids[i].caption;
+  triggerTie(i);
+  updateDots();
+}
+function startMontage(){
+  if(timer) return;
+  timer = setInterval(()=>{ index = (index+1)%polaroids.length; focusPolaroid(index); }, 4200);
+  document.getElementById('playBtn').textContent = 'Playing...';
+}
+function stopMontage(){
+  if(timer){ clearInterval(timer); timer=null; document.getElementById('playBtn').textContent = 'Play Montage'; }
+}
+document.getElementById('playBtn').addEventListener('click', ()=> { if(timer) stopMontage(); else startMontage(); });
+document.getElementById('pauseBtn').addEventListener('click', stopMontage);
 
-    <script>
-        // Sample product data
-        const products = [
-            {
-                id: 1,
-                name: "Wireless Headphones",
-                price: 99.99,
-                category: "electronics",
-                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
-                description: "High-quality wireless headphones with noise cancellation and premium sound quality."
-            },
-            {
-                id: 2,
-                name: "Smart Watch",
+/* dots update */
+function updateDots(){
+  const all = document.querySelectorAll('.dot');
+  all.forEach(d=>d.classList.remove('active'));
+  if(all[index]) all[index].classList.add('active');
+}
+updateDots();
+
+/* music control */
+const bg = document.getElementById('bgAudio');
+const musicBtn = document.getElementById('musicBtn');
+let musicOn=false;
+musicBtn.addEventListener('click', async ()=>{
+  try{
+    if(!musicOn){ await bg.play(); musicOn=true; musicBtn.textContent='Pause Music'; }
+    else { bg.pause(); musicOn=false; musicBtn.textContent='Play Music'; }
+  }catch(e){
+    alert('Browser requires user interaction to play audio. Tap Play first.');
+  }
+});
+
+/* ========== Export Offline: fetch all images + audio and build downloadable HTML ========== */
+document.getElementById('exportBtn').addEventListener('click', async ()=>{
+  const btn = document.getElementById('exportBtn');
+  btn.disabled = true; btn.textContent = 'Embedding images... (may take time)';
+  try{
+    const embedded = [];
+    for(const p of polaroids){
+      try{
+        const data = await fetchAsDataURL(p.src);
+        embedded.push({src:data, caption:p.caption});
+      }catch(err){
+        console.warn('fetch fail', p.src, err);
+        embedded.push({src:p.src, caption:p.caption, fetchError:true});
+      }
+    }
+    // audio
+    let audioData = null;
+    try{ audioData = await fetchAsDataURL(bg.querySelector('source').src); }catch(e){ console.warn('audio fetch fail', e); }
+
+    const failed = embedded.filter(x=>x.fetchError);
+    if(failed.length){
+      const proceed = confirm(`${failed.length} image(s) could not be embedded due to CORS. Export will keep remote URLs for those images (offline may not work for them). Try desktop Chrome if you want to attempt again. Proceed?`);
+      if(!proceed){ btn.disabled=false; btn.textContent='Export Offline'; return; }
+    }
+    const html = buildStandalone(embedded, audioData);
+    downloadFile(html, 'raksha_flowers_30_shared.html', 'text/html');
+    btn.textContent = 'Exported ✓ Download started';
+    setTimeout(()=>{ btn.disabled=false; btn.textContent='Export Offline'; }, 2500);
+  }catch(e){
+    alert('Export failed: '+(e.message||e));
+    btn.disabled=false; btn.textContent='Export Offline';
+  }
+});
+
+async function fetchAsDataURL(url){
+  const resp = await fetch(url, {mode:'cors'});
+  if(!resp.ok) throw new Error('network');
+  const blob = await resp.blob();
+  return await blobToDataURL(blob);
+}
+function blobToDataURL(blob){ return new Promise((res,rej)=>{ const r = new FileReader(); r.onload = ()=> res(r.result); r.onerror = rej; r.readAsDataURL(blob); }); }
+function downloadFile(content, name, mime){ const blob = new Blob([content], {type:mime}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
+
+/* build standalone HTML string */
+function buildStandalone(list, audioData){
+  const payload = JSON.stringify(list).replaceAll('</','<\\/');
+  const audioTag = audioData ? `<audio controls loop style="width:100%"><source src="${audioData}"></audio>` : '';
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Shared — Flowers Montage</title>
+  <style>body{margin:0;font-family:system-ui;background:linear-gradient(180deg,#fff7ed,#fff2df);color:#3b2b1a;padding:18px}.wrap{max-width:1100px;margin:0 auto}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.card{border-radius:10px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.06)}img{width:100%;height:auto;display:block;padding-bottom:6px}.label{padding:8px;font-weight:800;background:#fff}</style>
+  </head><body><div class="wrap"><h2>Flower Montage — Shared</h2>${audioTag}<div class="grid" id="grid"></div></div>
+  <script>const data = ${payload}; const grid = document.getElementById('grid'); data.forEach(it=>{ const c = document.createElement('div'); c.className='card'; c.innerHTML='<img src=\"'+it.src+'\"><div class=\"label\">'+(it.caption||'')+'</div>'; grid.appendChild(c); });</script></body></html>`;
+}
+
+/* small preload images */
+(function preload(){ polaroids.forEach(p=>{ const i=new Image(); i.src = p.src; }); })();
+</script>
+</body>
+</html>                name: "Smart Watch",
                 price: 199.99,
                 category: "electronics",
                 image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
